@@ -1,13 +1,10 @@
 param ($addressFile, $addressList)
 
-. '.\Функции для IP-адресов.ps1'
+. '.\Тип IP-адреса.ps1'
 
-Get-Content -LiteralPath $addressFile
-| Select-String "`t" -NotMatch
-| АдресСъМаскойВъДиапазон 24
-| ПривестиВъДополненнуюФорму
-| Sort-Object -Unique
-| Out-File -LiteralPath $addressList
+$адреса = Get-Content -LiteralPath $addressFile | Select-String "`t" -NotMatch
+$диапазоны = [IPАдрес]::ОбъединитьВъДиапазоны($адреса, 24)
+Set-Content $диапазоны -LiteralPath $addressList
 
 Write-Host "Создан файл со списком диапазонов, объединяющих полученные IP-адреса." -ForegroundColor Green
 
